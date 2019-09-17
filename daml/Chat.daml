@@ -1,0 +1,50 @@
+daml 1.2
+module Chat where
+
+template ChatRoom 
+    with
+        id: Text
+        owner: Party
+        channelName : Text 
+        members: [Party]
+        messages: [(Party, Time, Text)]
+    where   
+        signatory owner 
+        observer members 
+
+        controller owner can 
+            Invite : ContractId ChatRoom 
+                with newMember : Party 
+                    do
+                        create ChatRoom with id, owner, channelName, members = newMember :: members, messages = messages
+
+        
+        choice Add : ContractId ChatRoom
+                with
+                winner : Party
+                message : Text
+            controller winner             
+                do 
+                    tm <- getTime
+                    create ChatRoom with id, owner, channelName, members, messages = (winner, tm, message) :: messages 
+
+basic = scenario do
+  alice <- getParty "Alice"
+  bob <- getParty "Bob"
+
+  room1 <- submit alice do
+    create ChatRoom with
+      id = "random-id"
+      owner = alice
+      channelName = "Whoop"
+      members = [alice]
+      messages = []
+
+  room2 <- submit alice do
+    exercise room1 Invite with
+      newMember = bob
+
+  submit bob do
+    exercise room2 Add with
+      winner = bob
+      message = "YEAH"

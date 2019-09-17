@@ -1,0 +1,11 @@
+sdk-version: 0.13.23
+name: daml-chat-app
+source: daml
+scenario: Chat:basic
+parties:
+  - Alice
+  - Bob
+version: 0.0.1
+dependencies:
+  - daml-prim
+  - daml-stdlib

@@ -1,0 +1,48 @@
+{
+  "name": "ui",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.19.0",
+    "date-fns": "^2.2.1",
+    "prop-types": "^15.7.2",
+    "query-string": "^6.8.3",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-markdown": "^4.2.2",
+    "react-scripts": "3.1.1",
+    "react-scroll": "^1.7.14",
+    "react-syntax-highlighter": "^11.0.2",
+    "react-textarea-autosize": "^7.1.0",
+    "skeleton-css": "^2.0.4"
+  },
+  "scripts": {
+    "build-daml": "daml build",
+    "build-ui": "react-scripts build",
+    "start-sandbox": "daml sandbox --wall-clock-time --ledgerid chatroom .daml/dist/daml-chat-app-*.dar",
+    "start-json-api": "wait-on tcp:6865 && daml json-api --ledger-host localhost --ledger-port 6865 --http-port 6866",
+    "start-ui": "wait-on tcp:6866 && react-scripts start",
+    "start": "npm run build-daml && concurrently npm:start-*",
+    "build": "concurrently npm:build-*"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "proxy": "http://localhost:6866",
+  "devDependencies": {
+    "concurrently": "^4.1.2",
+    "wait-on": "^3.3.0"
+  }
+}
