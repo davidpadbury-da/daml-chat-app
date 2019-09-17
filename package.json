@@ -23,7 +23,9 @@
     "start-json-api": "wait-on tcp:6865 && daml json-api --ledger-host localhost --ledger-port 6865 --http-port 6866",
     "start-ui": "wait-on tcp:6866 && react-scripts start",
     "start": "npm run build-daml && concurrently npm:start-*",
-    "build": "concurrently npm:build-*"
+    "clean": "rm -rf ./build && rm -rf ./.daml",
+    "shim-dar": "./scripts/shim-dar.sh",
+    "build": "concurrently npm:build-* && npm run shim-dar"
   },
   "eslintConfig": {
     "extends": "react-app"

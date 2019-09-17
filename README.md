@@ -34,4 +34,5 @@ First run `npm install` to install required dependencies.
 
 ## Building
 
-`npm run build`
+  - `npm run clean` will remove built artifacts from `build` and `.daml`.
+  - `npm run build` will build a DAR for the daml project and the static resources for the React application, then add the web content to a `ui` directory in the built DAR.
