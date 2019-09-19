@@ -3,17 +3,17 @@
     {
       "displayName": "participant1",
       "isLocal": false,
-      "partyId": "participant1::participant1-identity"
+      "partyId": "participant1::gewgjgjeopwagjopwagjpowagopawojegopawjgpoewa"
     },
     {
       "displayName": "Bob",
       "isLocal": true,
-      "partyId": "Bob"
+      "partyId": "Bob::jgoepwait30124u90r39u10hj3i290ht3109h9t320"
     },
     {
       "displayName": "Alice",
       "isLocal": true,
-      "partyId": "Alice"
+      "partyId": "Alice::vneiwoiat39iej309oeei93idk3iod30e0"
     }
   ],
   "status": 200

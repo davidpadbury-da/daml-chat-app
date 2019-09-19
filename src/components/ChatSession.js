@@ -7,7 +7,7 @@ import ReactMarkdown from 'react-markdown'
 import CodeBlock from './CodeBlock'
 
 const ChatSession = props => {
-  const { messages } = props;
+  const { messages, parties } = props;
 
   return messages.map(message => {
     const time = format(new Date(`${message.timestamp}`), 'HH:mm');
@@ -15,7 +15,7 @@ const ChatSession = props => {
     return (
       <li className="message" key={message.timestamp.getTime()}>
         <div>
-          <span className="user-id">{message.sender}</span>
+          <span className="user-id">{parties[message.sender] || message.sender}</span>
           <span>
             <ReactMarkdown
               source={message.text}
@@ -31,6 +31,7 @@ const ChatSession = props => {
 
 ChatSession.propTypes = {
   messages: Proptypes.arrayOf(Proptypes.object).isRequired,
+  parties: Proptypes.arrayOf(Proptypes.object).isRequired,
 };
 
 export default ChatSession;

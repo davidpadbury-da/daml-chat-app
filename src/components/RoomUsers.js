@@ -2,13 +2,13 @@ import React from 'react';
 import Proptypes from 'prop-types';
 
 const RoomUsers = props => {
-  const { roomUsers, currentUser } = props;
+  const { roomUsers, parties } = props;
   const users = roomUsers.map(user => {
     return (
       <li className="room-member" key={user}>
         <div>
           <span className={`presence online`} />
-          <span>{user}</span>
+          <span>{parties[user] || user}</span>
         </div>
       </li>
     );
@@ -24,6 +24,7 @@ const RoomUsers = props => {
 RoomUsers.propTypes = {
   roomUsers: Proptypes.array.isRequired,
   currentUser: Proptypes.string.isRequired,
+  parties: Proptypes.array.isRequired
 };
 
 export default RoomUsers;

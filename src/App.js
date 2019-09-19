@@ -9,11 +9,13 @@ import { animateScroll } from 'react-scroll'
 import queryString from 'query-string'
 import Textarea from 'react-textarea-autosize'
 import rsaSign from 'jsrsasign'
+import ReactTextareaAutocomplete from "@webscopeio/react-textarea-autocomplete";
 
 import 'skeleton-css/css/normalize.css'
 import 'skeleton-css/css/skeleton.css'
 import './App.css';
 import PartyManager from './PartyManager';
+import "@webscopeio/react-textarea-autocomplete/style.css";
 
 function generateToken(party, ledgerId, secret) {
   const header = { alg: 'HS256', typ: 'JWT' }
@@ -33,6 +35,9 @@ function generateToken(party, ledgerId, secret) {
 // const secret = sssshhhh || prompt("What is your secret?")
 // const token = generateToken(party, ledgerId, secret)
 const GIPHY_TOKEN = 'kDqbzOZtPvy38TLdqonPnpTPrsLfW8uy'
+
+const Loading = ({ data }) => <div>Loading</div>
+const PartyAutoCompleteItem = ({ entity }) => <div>{`️🙉 ${entity.displayName}`}</div>
 
 class App extends Component {
   constructor() {
@@ -138,7 +143,7 @@ class App extends Component {
 
       case 'invite':
         if (!currentRoom) return alert("You must be in a room to invite a user.")
-        this.chatManager.inviteUser(currentRoom, content)
+        this.chatManager.inviteUser(currentRoom, content.trim())
         break;
 
       case 'giphy':
@@ -208,7 +213,7 @@ class App extends Component {
         <aside className="sidebar left-sidebar">
         {currentUser ? (
             <div className="user-profile">
-              <span className="username">{`@${currentUser}`}</span>
+              <span className="username">{`@${parties[currentUser]}`}</span>
             </div>
           ) : null}
           {!!rooms ? (
@@ -225,22 +230,33 @@ class App extends Component {
               {currentRoom ? <h3>{currentRoom.channelName}</h3> : null}
           </header>
           <ul className="chat-messages" id="chat-messages">
-            <ChatSession messages={messages} />
+            <ChatSession messages={messages} parties={parties} />
           </ul>
           <footer className="chat-footer">
             <fieldset>
               <form className="message-form" autoComplete="off" onSubmit={this.sendMessage}>
-                <Textarea
-                  minRows={1}
-                  maxRows={3}
+                <ReactTextareaAutocomplete
+                  className="message-input"
                   value={newMessage}
                   name="newMessage"
                   className="message-input"
                   placeholder="Type your message and hit ENTER to send"
                   onChange={this.handleInput}
                   onKeyDown={this.messageKeyDown}
-                  resize="none"
-                />
+                  trigger={{
+                    "@": {
+                      dataProvider: token => {
+                        return parties
+                          .filter(p => p.displayName.toLowerCase().includes(token.toLowerCase()))
+                          .slice(0, 10)
+                          .map(p => ({ displayName: p.displayName, partyId: p.partyId }))
+                      },
+                      component: PartyAutoCompleteItem,
+                      output: (item, trigger) => item.partyId
+                    }
+                  }}
+                  loadingComponent={Loading}
+                  resize="none" />
               </form>
             </fieldset>
           </footer>
@@ -259,6 +275,7 @@ class App extends Component {
               <RoomUsers
                 currentUser={currentUser}
                 roomUsers={roomUsers}
+                parties={parties}
               />
             ) : null}
         </aside>

@@ -23,7 +23,13 @@ export default function PartyManager(stateUpdate) {
     )
     return parties
   }
-  const toModel = resp => sortParties(resp)
+  const toModel = resp => {
+    const parties = sortParties(resp)
+    // I've already treated this as an array everywhere but also want a convenient party lookup
+    // aint javascript great?
+    parties.forEach(p => parties[p.partyId] = p.displayName)
+    return parties
+  }
 
   const scheduleNextUpdate = () => setTimeout(fetchUpdate, 3000)
 

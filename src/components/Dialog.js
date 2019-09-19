@@ -25,7 +25,7 @@ const Dialog = props => {
             id="secret"
             className="username-input"
             autoFocus
-            type="text"
+            type="password"
             name="secret"
             value={secret}
             onChange={handleInput}
