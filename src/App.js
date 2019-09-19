@@ -13,7 +13,7 @@ import 'skeleton-css/css/normalize.css'
 import 'skeleton-css/css/skeleton.css'
 import './App.css';
 
-const { party, ledgerId } = queryString.parse(window.location.search)
+const { party, ledgerId, sssshhhh } = queryString.parse(window.location.search)
 
 if (!party) {
   alert('party parameter is missing 😿')
@@ -38,7 +38,8 @@ function generateToken(party, ledgerId, secret) {
   )
 }
 
-const token = generateToken(party, ledgerId, 'secret')
+const secret = sssshhhh || prompt("What is your secret?")
+const token = generateToken(party, ledgerId, secret)
 const GIPHY_TOKEN = 'kDqbzOZtPvy38TLdqonPnpTPrsLfW8uy'
 let priorRooms
 
