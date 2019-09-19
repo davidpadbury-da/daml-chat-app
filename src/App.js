@@ -7,17 +7,38 @@ import RoomUsers from './components/RoomUsers'
 import { animateScroll } from 'react-scroll'
 import queryString from 'query-string'
 import Textarea from 'react-textarea-autosize'
+import rsaSign from 'jsrsasign'
 
 import 'skeleton-css/css/normalize.css'
 import 'skeleton-css/css/skeleton.css'
 import './App.css';
 
-const party = queryString.parse(window.location.search).party || 'Alice'
-const partyTokens = {
-  Alice: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsZWRnZXJJZCI6ImNoYXRyb29tIiwiYXBwbGljYXRpb25JZCI6ImZvb2JhciIsInBhcnR5IjoiQWxpY2UifQ.LAYk7tX6OfcyZh5aOPrxlnVwRZ3iqtED3wadpunO45o',
-  Bob: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsZWRnZXJJZCI6ImNoYXRyb29tIiwiYXBwbGljYXRpb25JZCI6ImZvb2JhciIsInBhcnR5IjoiQm9iIn0.HEdbEnyeApZboQmdrPGJ0-tyqeuLV-XiqpJvcc7qHAw'
+const { party, ledgerId } = queryString.parse(window.location.search)
+
+if (!party) {
+  alert('party parameter is missing 😿')
 }
-const token = partyTokens[party]
+
+if (!ledgerId) {
+  alert('ledgerId parameter is missing 😿')
+}
+
+function generateToken(party, ledgerId, secret) {
+  const header = { alg: 'HS256', typ: 'JWT' }
+  const payload = {
+    ledgerId, party,
+    applicationId: 'daml-chat-app'
+  }
+
+  return rsaSign.jws.JWS.sign(
+    'HS256',
+    JSON.stringify(header),
+    JSON.stringify(payload),
+    secret
+  )
+}
+
+const token = generateToken(party, ledgerId, 'secret')
 const GIPHY_TOKEN = 'kDqbzOZtPvy38TLdqonPnpTPrsLfW8uy'
 let priorRooms
 
