@@ -76,7 +76,7 @@ class App extends Component {
   }
 
   async createChatManager(party, secret) {
-    const token = generateToken(party, 'chatroom', secret)
+    const token = generateToken(party, ledgerId, secret)
     
     try {
       this.chatManager = await ChatManager(party, token, onChange(rooms => {
