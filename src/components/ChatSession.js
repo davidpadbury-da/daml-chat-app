@@ -1,6 +1,6 @@
 // client/src/components/ChatSession.js
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import Proptypes from 'prop-types';
 import { format } from 'date-fns';
 import ReactMarkdown from 'react-markdown'

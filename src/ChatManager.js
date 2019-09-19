@@ -1,4 +1,4 @@
-export default function ChatManager(party, token, stateUpdate) {
+export default async function ChatManager(party, token, stateUpdate) {
   const headers = {
     Authorization: `Bearer ${token}`
   }
@@ -8,6 +8,20 @@ export default function ChatManager(party, token, stateUpdate) {
   const post = (url, options = {}) => {
     Object.assign(options, { method: 'POST', headers })
     return fetch(url, options)
+  }
+
+  // attempt a request to see if we're correctly authenticated
+  const initialRequest = await post('/contracts/search', { 
+      body: JSON.stringify({ '%templates': [ chatRoomTemplate ]})
+    })
+
+  switch (initialRequest.status) {
+    case 401:
+      throw new Error("Authentication failed")
+    case 404:
+      throw new Error("HTTP JSON failed")
+    case 500:
+      throw new Error("Internal Server Error")
   }
 
   const sortMessages = (messages) => {

@@ -1,0 +1,20 @@
+{
+  "result": [
+    {
+      "displayName": "participant1",
+      "isLocal": false,
+      "partyId": "participant1::participant1-identity"
+    },
+    {
+      "displayName": "Bob",
+      "isLocal": true,
+      "partyId": "Bob"
+    },
+    {
+      "displayName": "Alice",
+      "isLocal": true,
+      "partyId": "Alice"
+    }
+  ],
+  "status": 200
+}

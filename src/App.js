@@ -4,6 +4,7 @@ import ChatManager from './ChatManager'
 import RoomList from './components/RoomList';
 import ChatSession from './components/ChatSession';
 import RoomUsers from './components/RoomUsers'
+import Dialog from './components/Dialog'
 import { animateScroll } from 'react-scroll'
 import queryString from 'query-string'
 import Textarea from 'react-textarea-autosize'
@@ -12,16 +13,7 @@ import rsaSign from 'jsrsasign'
 import 'skeleton-css/css/normalize.css'
 import 'skeleton-css/css/skeleton.css'
 import './App.css';
-
-const { party, ledgerId, sssshhhh } = queryString.parse(window.location.search)
-
-if (!party) {
-  alert('party parameter is missing 😿')
-}
-
-if (!ledgerId) {
-  alert('ledgerId parameter is missing 😿')
-}
+import PartyManager from './PartyManager';
 
 function generateToken(party, ledgerId, secret) {
   const header = { alg: 'HS256', typ: 'JWT' }
@@ -38,44 +30,63 @@ function generateToken(party, ledgerId, secret) {
   )
 }
 
-const secret = sssshhhh || prompt("What is your secret?")
-const token = generateToken(party, ledgerId, secret)
+// const secret = sssshhhh || prompt("What is your secret?")
+// const token = generateToken(party, ledgerId, secret)
 const GIPHY_TOKEN = 'kDqbzOZtPvy38TLdqonPnpTPrsLfW8uy'
-let priorRooms
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
       userId: '',
-      showLogin: true,
-      isLoading: false,
-      currentUser: party,
+      secret: '',
+      currentUser: null,
       currentRoom: null,
-      rooms: [],
+      rooms: null,
       roomUsers: [],
       roomName: null,
       messages: [],
       newMessage: '',
+      parties: []
     };
-
-    this.chatManager = new ChatManager(party, token, onChange(rooms => {
-      const { currentRoom } = this.state
-
-      const newRoom = currentRoom && rooms.filter(r => r.id === currentRoom.id)[0] || rooms[0]
-
-      this.setState({
-        userId: party,
-        currentUser: party,
-        rooms: rooms,
-        ...this.updateCurrentRoomState(newRoom)
-      })
-    }))
 
     this.handleInput = this.handleInput.bind(this)
     this.sendMessage = this.sendMessage.bind(this)
     this.updateCurrentRoomState = this.updateCurrentRoomState.bind(this)
     this.messageKeyDown = this.messageKeyDown.bind(this)
+    this.login = this.login.bind(this)
+
+    this.partyManager = new PartyManager(onChange(parties => {
+      console.log('new parties', parties)
+      this.setState({ parties })
+    }))
+  }
+
+  login(event) {
+    const { userId, secret } = this.state
+    event.preventDefault()
+    this.createChatManager(userId, secret)
+  }
+
+  async createChatManager(party, secret) {
+    const token = generateToken(party, 'chatroom', secret)
+    
+    try {
+      this.chatManager = await ChatManager(party, token, onChange(rooms => {
+        const { currentRoom } = this.state
+
+        const newRoom = currentRoom && rooms.filter(r => r.id === currentRoom.id)[0] || rooms[0]
+
+        this.setState({
+          userId: party,
+          currentUser: party,
+          rooms: rooms,
+          ...this.updateCurrentRoomState(newRoom)
+        })
+      }))
+    } catch (ex) {
+      alert(ex.message || 'Unable to connect to chat')
+    }
   }
 
   componentDidMount() {
@@ -99,6 +110,10 @@ class App extends Component {
       roomUsers: room && room.members,
       messages: (room && room.messages) || []
     }
+  }
+
+  updateUserId(userId) {
+    this.setState({ userId })
   }
 
   sendMessage(event) {
@@ -169,7 +184,7 @@ class App extends Component {
 
   switchToRoom(id) {
     const { rooms } = this.state
-    const newRoom = rooms.filter(r => r.id == id)[0]
+    const newRoom = rooms.filter(r => r.id === id)[0]
 
     this.setState(this.updateCurrentRoomState(newRoom))
   }
@@ -177,7 +192,7 @@ class App extends Component {
   render() {
     const {
       userId,
-      showLogin,
+      secret,
       rooms,
       currentRoom,
       currentUser,
@@ -185,6 +200,7 @@ class App extends Component {
       newMessage,
       roomUsers,
       roomName,
+      parties
     } = this.state;
 
     return (
@@ -195,7 +211,7 @@ class App extends Component {
               <span className="username">{`@${currentUser}`}</span>
             </div>
           ) : null}
-          {rooms ? (
+          {!!rooms ? (
             <RoomList
               rooms={rooms}
               currentRoom={currentRoom}
@@ -230,7 +246,16 @@ class App extends Component {
           </footer>
         </section>
         <aside className="sidebar right-sidebar">
-            {currentRoom ? (
+            {!currentUser ? (
+              <Dialog 
+                userId={userId}
+                handleInput={this.handleInput}
+                login={this.login}
+                secret={this.secret}
+                parties={parties}
+                updateUserId={this.updateUserId.bind(this)} />
+            ) : null}
+            {!!currentRoom ? (
               <RoomUsers
                 currentUser={currentUser}
                 roomUsers={roomUsers}
