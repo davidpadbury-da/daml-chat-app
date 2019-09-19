@@ -37,7 +37,9 @@ function generateToken(party, ledgerId, secret) {
 const GIPHY_TOKEN = 'kDqbzOZtPvy38TLdqonPnpTPrsLfW8uy'
 
 const Loading = ({ data }) => <div>Loading</div>
-const PartyAutoCompleteItem = ({ entity }) => <div>{`️🙉 ${entity.displayName}`}</div>
+const PartyAutoCompleteItem = ({ entity }) => <div>{`️👤 ${entity.displayName}`}</div>
+const params = queryString.parse(window.location.search)
+const ledgerId = params.ledgerId || 'chatroom'
 
 class App extends Component {
   constructor() {
