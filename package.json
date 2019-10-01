@@ -28,6 +28,11 @@
     "start-proxy": "wait-on tcp:6865 && ws --port 6867 --rewrite '/command/(.*) -> http://localhost:6866/command/$1' '/contracts/(.*) -> http://localhost:6866/contracts/$1' --directory stubs --static.extensions json",
     "start-ui": "wait-on tcp:6867 && react-scripts start",
     "start": "npm run build-daml && concurrently npm:start-*",
+    "live-json-api": "wait-on tcp:10011 && daml json-api --ledger-host localhost --ledger-port 10011 --http-port 6866",
+    "live-proxy": "wait-on tcp:10011 && ws --port 6867 --rewrite '/command/(.*) -> http://localhost:6866/command/$1' '/contracts/(.*) -> http://localhost:6866/contracts/$1' --directory live-stubs --static.extensions json",
+    "live-ui" : "wait-on tcp:6867 && react-scripts start",
+    "live" : "concurrently npm:live-*",
+    "start-ui": "wait-on tcp:6867 && react-scripts start",
     "clean": "rm -rf ./build && rm -rf ./.daml",
     "shim-dar": "./scripts/shim-dar.sh",
     "build": "concurrently npm:build-* && npm run shim-dar"
