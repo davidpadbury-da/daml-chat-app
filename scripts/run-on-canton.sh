@@ -1,7 +1,6 @@
 #!/bin/bash
 
 set -e
-trap 'kill $(jobs -p)' EXIT
 
 if [ "$1" == "" ]; then
   echo "usage: $(basename $0) <party-name> [domain-url = https://canton.global]"
@@ -18,6 +17,11 @@ if [ ! -e .daml/dist/daml-chat-app-0.0.1.dar ]; then
   echo "please build the solutions first using"
   echo "  npm install"
   echo "  npm run build"
+  exit 1
+fi
+
+if ! [ -x "$(command -v screen)" ]; then
+  echo 'Error: screen is not installed.' >&2
   exit 1
 fi
 
@@ -49,6 +53,8 @@ if [ ! -e $TARGET/${FNAME} ]; then
   cd ..
 fi
 
+
+
 # generate script
 cat > $TARGET/upstart.canton <<- EOM
 participant1.start()
@@ -68,9 +74,12 @@ EOM2
 # remove lock file
 rm -f $LOCKFILE
 
-$TARGET/latest/bin/canton daemon -v --truncate-log \
+trap 'screen -X -S cantonchat kill' EXIT
+
+echo "Starting canton chat background screen session"
+screen -d -m -S cantonchat $TARGET/latest/bin/canton -v --truncate-log \
   -c $TARGET/latest/examples/03-split-configuration/participant1.conf \
-  --bootstrap-script=$TARGET/upstart.canton &
+  --bootstrap-script=$TARGET/upstart.canton 
 
 echo "PLEASE ADJUST URL IN OPENED BROWSER TO http://localhost:3000?ledgerId=participant1"
 echo "Waiting for Canton to start"
