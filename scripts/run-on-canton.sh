@@ -14,6 +14,13 @@ else
   DOMAIN_URL=$2
 fi
 
+if [ ! -e .daml/dist/daml-chat-app-0.0.1.dar ]; then
+  echo "please build the solutions first using"
+  echo "  npm install"
+  echo "  npm run build"
+  exit 1
+fi
+
 if [ "$CANTON_AUTO_APPROVE_AGREEMENTS" != "yes" ]; then
   echo "please set export CANTON_AUTO_APPROVE_AGREEMENTS=yes"
   echo "this will auto-accept the terms of service of the global canton domain"
@@ -40,8 +47,6 @@ if [ ! -e $TARGET/${FNAME} ]; then
   ln -s $DIRECTORY latest
   cd ..
 fi
-
-
 
 # generate script
 cat > $TARGET/upstart.canton <<- EOM
