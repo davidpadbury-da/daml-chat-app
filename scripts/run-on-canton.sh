@@ -29,6 +29,7 @@ if [ "$CANTON_AUTO_APPROVE_AGREEMENTS" != "yes" ]; then
 fi
 
 TARGET=canton
+LOCKFILE=.canton.ready
 
 # find latest release
 URL=$(curl -s https://api.github.com/repos/digital-asset/canton/releases/latest | grep browser_download_url | grep "tar.gz" | cut -d '"' -f 4)
@@ -59,12 +60,24 @@ retryUntilTrue() {
 }
 EOM
 cat setup.sc >> $TARGET/upstart.canton
+cat >> $TAGET/upstart.canton <<- EOM2
+import java.io.FileOutputStream
+new FileOutputStream(new File("${LOCKFILE}")).close();
+EOM2
+
+# remove lock file
+rm -f $LOCKFILE
 
 $TARGET/latest/bin/canton daemon -v --truncate-log \
   -c $TARGET/latest/examples/03-split-configuration/participant1.conf \
   --bootstrap-script=$TARGET/upstart.canton &
 
 echo "PLEASE ADJUST URL IN OPENED BROWSER TO http://localhost:3000?ledgerId=participant1"
+echo "Waiting for Canton to start"
+
+while [ ! -e $LOCKFILE ]; do
+  sleep 0.5
+done
 
 npm run live
 
