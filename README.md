@@ -5,6 +5,7 @@
 ## Credits
 
 UI shamelessly stolen from [React Direct Messaging Example by Pusher](https://pusher.com/tutorials/react-direct-messaging).
+Full code available at [ayoisaiah/chatkit-direct-messages](https://github.com/ayoisaiah/chatkit-direct-messages).
 
 ## Setup
 
