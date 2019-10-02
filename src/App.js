@@ -130,9 +130,9 @@ class App extends Component {
     if (newMessage.trim() === '') return
 
     const match = /\/(\w+) (.*)/.exec(newMessage)
-    const command = match ? match[1] : 'send'
+    const command = match ? match[1] : (newMessage === '/parties' ? 'parties' : 'send')
     const content = match ? match[2] : newMessage
-
+    
     switch (command) {
       case 'send':
         if (!currentRoom) return alert("You must be in a room to send a message.")
@@ -157,6 +157,14 @@ class App extends Component {
             this.chatManager.sendMessage(currentRoom, message)
           })
           break;
+
+      case 'parties':
+        const message = this.state.parties.map(x => x.partyId).join("\n")
+        this.setState({
+          messages: this.state.messages.concat({timestamp: new Date(), sender: 'Known Parties', text: message })
+        })
+        console.log("showing parties")
+        break;
 
       default:
         console.log("Unknown command", command)
