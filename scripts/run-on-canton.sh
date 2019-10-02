@@ -66,9 +66,11 @@ retryUntilTrue() {
 }
 EOM
 cat setup.sc >> $TARGET/upstart.canton
-cat >> $TAGET/upstart.canton <<- EOM2
-import java.io.FileOutputStream
-new FileOutputStream(new File("${LOCKFILE}")).close();
+cat >> $TARGET/upstart.canton <<- EOM2
+import java.io._
+val bw = new BufferedWriter(new FileWriter("${LOCKFILE}"))
+bw.write("hello")
+bw.close()
 EOM2
 
 # remove lock file
