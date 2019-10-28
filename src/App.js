@@ -77,7 +77,7 @@ class App extends Component {
 
   async createChatManager(party, secret) {
     const token = generateToken(party, ledgerId, secret)
-    
+
     try {
       this.chatManager = await ChatManager(party, token, onChange(rooms => {
         const { currentRoom } = this.state
@@ -129,9 +129,9 @@ class App extends Component {
 
     if (newMessage.trim() === '') return
 
-    const match = /\/(\w+) (.*)/.exec(newMessage)
+    const match = /\/(\w+)((?:\s*)(.*))?/.exec(newMessage)
     const command = match ? match[1] : 'send'
-    const content = match ? match[2] : newMessage
+    const content = match ? match[3] : newMessage
 
     switch (command) {
       case 'send':
@@ -157,6 +157,13 @@ class App extends Component {
             this.chatManager.sendMessage(currentRoom, message)
           })
           break;
+
+      case 'parties':
+        const message = this.state.parties.map(x => x.partyId).join("\n")
+        this.setState({
+          messages: this.state.messages.concat({timestamp: new Date(), sender: 'Known Parties', text: message })
+        })
+        break;
 
       default:
         console.log("Unknown command", command)
@@ -265,7 +272,7 @@ class App extends Component {
         </section>
         <aside className="sidebar right-sidebar">
             {!currentUser ? (
-              <Dialog 
+              <Dialog
                 userId={userId}
                 handleInput={this.handleInput}
                 login={this.login}
