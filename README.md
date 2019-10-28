@@ -24,17 +24,17 @@ First run `npm install` to install required dependencies.
 
 ## Running on Canton
 
-First, run `npm install` to install the dependencies. 
+First, run `npm install` to install the dependencies.
 
-Then, run `npm build` to build the dar.
+Then, run `npm run build` to build the dar.
 
 Then, start `bin/canton -v -c examples/03-split-configuration/participant1.conf` from the `daml-chat-app` directory.
 
 Now, connect to the global domain `connect(participant1, "global", "https://canton.global", autoConnect=true)` and add yourself
-`enable_party(participant1, "YOURNAME")`. 
+`enable_party(participant1, "YOURNAME")`.
 
-Once you are connected, run the `setup.sc` script from canton by typing `import $file.setup`. 
-The import command only works with file endings `.sc`. The setup script will export the parties 
+Once you are connected, run the `setup.sc` script from canton by typing `import $file.setup`.
+The import command only works with file endings `.sc`. The setup script will export the parties
 into `live-stubs/parties.json`.
 
 Now, start the chat app `npm run live`
