@@ -81,7 +81,7 @@ trap 'screen -X -S cantonchat kill' EXIT
 echo "Starting canton chat background screen session"
 screen -d -m -S cantonchat $TARGET/latest/bin/canton -v --truncate-log \
   -c $TARGET/latest/examples/03-split-configuration/participant1.conf \
-  --bootstrap-script=$TARGET/upstart.canton 
+  --bootstrap=$TARGET/upstart.canton
 
 echo "PLEASE ADJUST URL IN OPENED BROWSER TO http://localhost:3000?ledgerId=participant1"
 echo "Waiting for Canton to start"
