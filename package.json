@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@webscopeio/react-textarea-autocomplete": "^4.6.1",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "date-fns": "^2.2.1",
     "jsrsasign": "^8.0.12",
     "local-web-server": "^3.0.7",
