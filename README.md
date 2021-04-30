@@ -1,3 +1,7 @@
+# Deprecation Notice!
+
+See [dablchat](https://github.com/digital-asset/dablchat) for a maintained project doing similar things in a much better way.
+
 # DAML Chat App
 
 ![Screenshot](doc/screenshot.png)
